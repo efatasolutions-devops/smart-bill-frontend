@@ -43,7 +43,7 @@ export default function DashboardPage() {
     { id: "3", date: "2024-01-16", title: "Kopi Pagi", amount: 25000, category: "Food", type: "expense" },
     { id: "4", date: "2024-01-16", title: "Freelance Payment", amount: 500000, category: "Work", type: "income" },
     { id: "5", date: "2024-01-18", title: "Nongkrong Cafe", amount: 85000, category: "Food", type: "expense" },
-    { id: "6", date: "2024-01-18", title: "Bonus Project", amount: 00, category: "Work", type: "income" },
+    { id: "6", date: "2024-01-18", title: "Bonus Project", amount: 0, category: "Work", type: "income" },
     { id: "7", date: "2024-01-20", title: "Makan Siang Kantor", amount: 45000, category: "Food", type: "expense" },
     { id: "8", date: "2024-01-20", title: "Transport", amount: 35000, category: "Transport", type: "expense" },
     { id: "9", date: "2024-01-20", title: "Salary", amount: 1200000, category: "Work", type: "income" },
