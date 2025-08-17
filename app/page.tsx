@@ -1,18 +1,35 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Users, UserCheck, ArrowRight, Sparkles, Zap } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Users, UserCheck, ArrowRight, Sparkles, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function HomePage() {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    // Redirect to Beranda instead of dashboard
-    router.push("/beranda")
-  }, [router])
+    // const isUserLogin = localStorage?.getItem("isLoggedIn");
+    // const hasUserName = localStorage?.getItem("username");
+    // // Redirect to Beranda instead of dashboard
+
+    // if (isUserLogin && hasUserName) {
+    //   router.push("/beranda");
+    // } else {
+    //   router.push("/login");
+    // }
+
+    router.push("/beranda");
+  }, [router]);
+
+  return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-100/50 flex items-center justify-center p-4 relative overflow-hidden">
@@ -26,14 +43,21 @@ export default function HomePage() {
       <div className="w-full max-w-7xl relative z-10">
         <div className="text-center mb-20">
           <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-primary-500 via-secondary-500 to-primary-600 rounded-3xl mb-8 shadow-2xl">
-            <span className="text-3xl font-bold text-white font-display">LB</span>
+            <span className="text-3xl font-bold text-white font-display">
+              LB
+            </span>
           </div>
 
           <div className="space-y-6">
-            <h1 className="text-7xl md:text-8xl font-bold font-display gradient-text mb-6 tracking-tight">LihatBill</h1>
+            <h1 className="text-7xl md:text-8xl font-bold font-display gradient-text mb-6 tracking-tight">
+              LihatBill
+            </h1>
             <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed font-body font-light">
               Platform modern untuk mengelola dan membagi tagihan dengan mudah.
-              <span className="font-medium text-slate-700"> Kelola keuangan Anda dengan lebih smart.</span>
+              <span className="font-medium text-slate-700">
+                {" "}
+                Kelola keuangan Anda dengan lebih smart.
+              </span>
             </p>
 
             <div className="flex items-center justify-center gap-2 text-sm text-slate-500 font-body">
@@ -59,9 +83,12 @@ export default function HomePage() {
                 <div className="mx-auto w-20 h-20 bg-gradient-to-br from-accent-400 via-accent-500 to-accent-600 rounded-3xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 shadow-xl">
                   <Users className="w-10 h-10 text-white" />
                 </div>
-                <CardTitle className="text-3xl font-display font-bold text-slate-800 mb-4">Guest Mode</CardTitle>
+                <CardTitle className="text-3xl font-display font-bold text-slate-800 mb-4">
+                  Guest Mode
+                </CardTitle>
                 <CardDescription className="text-slate-600 text-lg leading-relaxed font-body">
-                  Mulai langsung tanpa registrasi. Perfect untuk split bill cepat dengan teman-teman.
+                  Mulai langsung tanpa registrasi. Perfect untuk split bill
+                  cepat dengan teman-teman.
                 </CardDescription>
               </div>
             </CardHeader>
@@ -83,9 +110,12 @@ export default function HomePage() {
                 <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary-500 via-secondary-500 to-primary-600 rounded-3xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 shadow-xl">
                   <UserCheck className="w-10 h-10 text-white" />
                 </div>
-                <CardTitle className="text-3xl font-display font-bold text-slate-800 mb-4">Member Access</CardTitle>
+                <CardTitle className="text-3xl font-display font-bold text-slate-800 mb-4">
+                  Member Access
+                </CardTitle>
                 <CardDescription className="text-slate-600 text-lg leading-relaxed font-body">
-                  Akses fitur lengkap dengan dashboard analytics dan financial tracking yang powerful.
+                  Akses fitur lengkap dengan dashboard analytics dan financial
+                  tracking yang powerful.
                 </CardDescription>
               </div>
             </CardHeader>
@@ -99,5 +129,5 @@ export default function HomePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
