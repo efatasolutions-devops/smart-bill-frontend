@@ -5,7 +5,9 @@ export async function POST(req: NextRequest) {
   const { html, styles } = await req.json();
 
   const browser = await puppeteer.launch({
+    executablePath: process.env.CHROME_EXECUTABLE_PATH,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    headless: "new",
   });
 
   const page = await browser.newPage();
@@ -20,7 +22,6 @@ export async function POST(req: NextRequest) {
       </head>
       <body>
         ${html}
-
       </body>
     </html>
     `,
