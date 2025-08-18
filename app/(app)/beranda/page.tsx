@@ -26,7 +26,6 @@ import { useRouter } from "next/navigation";
 
 export default function BerandaPage() {
   const router = useRouter();
-
   const ctx = React.useContext(LayoutContext);
 
   const navigationItems = [
@@ -109,26 +108,44 @@ export default function BerandaPage() {
   ];
 
   return (
-    <>
-      {/* Hero Banner - Static Image */}
-      <section className="relative h-[60vh] overflow-hidden">
-        <div className="relative w-full h-full">
+    <div className="min-h-screen">
+      {/* Hero Banner - Responsif */}
+      <section className="relative h-[50vh] sm:h-[60vh] overflow-hidden">
+        <div className="absolute inset-0">
           <img
-            src="/placeholder.svg?height=600&width=1200&text=LihatBill+Hero+Banner+-+Split+Bill+Made+Easy"
+            src="/placeholder.svg?height=600&width=1200&text=LihatBill+Hero+Banner"
             alt="LihatBill - Kelola Keuangan Jadi Mudah"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
+        </div>
+        <div className="relative z-10 flex items-center h-full px-6">
+          <div className="max-w-lg">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
+              Kelola Keuangan & Bagi Bill Jadi Mudah
+            </h1>
+            <p className="text-lg text-white/90 mb-6">
+              Aplikasi all-in-one untuk split bill, pencatatan keuangan, dan analisis pengeluaran.
+            </p>
+            <Button
+              onClick={() => router.push("/splitbill")}
+              className="bg-white text-slate-800 hover:bg-gray-100 font-semibold px-6 py-3 text-base"
+            >
+              Coba Sekarang
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
         </div>
       </section>
+
       {/* Navigation Items */}
-      <section className="px-6 py-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-slate-800 font-display mb-4">
+      <section className="px-6 py-12 sm:py-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl font-bold text-slate-800 mb-3">
               Apa yang Bisa Kamu Lakukan?
             </h2>
-            <p className="text-xl text-slate-600 font-body">
+            <p className="text-base sm:text-xl text-slate-600">
               Cek fitur yang kamu butuhin disini!
             </p>
           </div>
@@ -137,27 +154,25 @@ export default function BerandaPage() {
             {navigationItems.map((item, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-6 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 group"
+                className="flex flex-col sm:flex-row items-center p-4 sm:p-6 bg-white/80 backdrop-blur-sm rounded-xl border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 group"
               >
-                <div className="flex items-center space-x-6">
+                <div className="flex items-center mb-4 sm:mb-0 sm:mr-6 w-full sm:w-auto">
                   <div
                     className={`w-12 h-12 ${item.iconBg} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
                   >
                     <item.icon className={`w-6 h-6 ${item.iconColor}`} />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-slate-800 font-display mb-1">
+                  <div className="ml-4 text-left">
+                    <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-1">
                       {item.title}
                     </h3>
-                    <p className="text-slate-600 font-body text-sm">
-                      {item.description}
-                    </p>
+                    <p className="text-slate-600 text-sm">{item.description}</p>
                   </div>
                 </div>
                 <Button
                   onClick={() => router.push(item.href)}
                   variant="outline"
-                  className={`${item.buttonColor} font-body btn-modern px-6 py-2 bg-transparent`}
+                  className={`${item.buttonColor} px-6 py-2 w-full sm:w-auto font-medium`}
                 >
                   {item.buttonText}
                 </Button>
@@ -166,51 +181,52 @@ export default function BerandaPage() {
           </div>
         </div>
       </section>
+
       {/* Blog Section */}
-      <section className="px-6 py-16 bg-white/50 backdrop-blur-sm relative">
+      <section className="px-6 py-12 sm:py-16 bg-white/50 backdrop-blur-sm relative">
         <ComingSoonOverlay />
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-slate-800 font-display mb-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10 sm:mb-16">
+            <h2 className="text-2xl sm:text-4xl font-bold text-slate-800 mb-3">
               Tips & Insights
             </h2>
-            <p className="text-xl text-slate-600 font-body">
+            <p className="text-sm sm:text-xl text-slate-600">
               Baca artikel terbaru tentang keuangan dan teknologi
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogPosts.map((post) => (
               <Card
                 key={post.id}
-                className="group card-modern border-0 overflow-hidden cursor-pointer"
+                className="group border-0 overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <div className="aspect-video overflow-hidden">
                   <img
-                    src={post.image || "/placeholder.svg"}
+                    src={post.image}
                     alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between mb-3">
-                    <Badge className="bg-primary-100 text-primary-700 border-primary-200 text-xs font-body">
+                  <div className="flex items-center justify-between mb-2">
+                    <Badge className="bg-primary-100 text-primary-700 border-primary-200 text-xs px-2 py-1">
                       {post.category}
                     </Badge>
-                    <div className="flex items-center text-xs text-slate-500 font-body">
+                    <div className="flex items-center text-xs text-slate-500">
                       <Clock className="w-3 h-3 mr-1" />
                       {post.readTime}
                     </div>
                   </div>
-                  <CardTitle className="text-lg font-display font-bold text-slate-800 mb-2 leading-tight group-hover:text-primary-600 transition-colors">
+                  <CardTitle className="text-base font-bold text-slate-800 leading-tight group-hover:text-primary-600 transition-colors line-clamp-2">
                     {post.title}
                   </CardTitle>
-                  <CardDescription className="text-slate-600 font-body text-sm leading-relaxed">
+                  <CardDescription className="text-slate-600 text-sm mt-1 line-clamp-2">
                     {post.excerpt}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <div className="flex items-center justify-between text-xs text-slate-500 font-body">
+                  <div className="flex items-center justify-between text-xs text-slate-500">
                     <div className="flex items-center">
                       <User className="w-3 h-3 mr-1" />
                       {post.author}
@@ -222,10 +238,10 @@ export default function BerandaPage() {
             ))}
           </div>
 
-          <div className="text-center mt-12">
+          <div className="text-center mt-10">
             <Button
               variant="outline"
-              className="glass-effect border-slate-200/50 hover:bg-white/80 font-body btn-modern px-8 py-3 bg-transparent"
+              className="border-slate-300 hover:bg-slate-50 px-6 py-2 text-sm bg-transparent"
             >
               Lihat Semua Artikel
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -233,187 +249,100 @@ export default function BerandaPage() {
           </div>
         </div>
       </section>
+
       {/* Footer */}
-      <footer className="px-6 py-16 bg-slate-900 text-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+      <footer className="px-6 py-12 bg-slate-900 text-white">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             {/* Brand */}
-            <div className="md:col-span-1">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary-500 via-secondary-500 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-lg font-display">
-                    LB
-                  </span>
+            <div className="sm:col-span-1">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-primary-500 via-secondary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-sm">LB</span>
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold font-display">LihatBill</h3>
-                  <p className="text-slate-400 text-sm font-body">
-                    Kelola uang jadi mudah
-                  </p>
+                  <h3 className="text-xl font-bold">LihatBill</h3>
+                  <p className="text-slate-400 text-xs">Kelola uang jadi mudah</p>
                 </div>
               </div>
-              <p className="text-slate-300 font-body leading-relaxed">
-                Platform terpercaya untuk mengelola keuangan pribadi dan split
-                bill bersama teman.
+              <p className="text-slate-300 text-sm leading-relaxed">
+                Platform terpercaya untuk mengelola keuangan pribadi dan split bill bersama teman.
               </p>
             </div>
 
             {/* Product */}
             <div>
-              <h4 className="text-lg font-semibold font-display mb-4">
-                Produk
-              </h4>
-              <ul className="space-y-3 font-body">
-                <li>
-                  <a
-                    href="/splitbill"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Split Bill
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/dashboard"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/finance"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Finance Tracker
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Mobile App
-                  </a>
-                </li>
+              <h4 className="text-base font-semibold mb-4">Produk</h4>
+              <ul className="space-y-2 text-sm">
+                {["Split Bill", "Dashboard", "Finance Tracker", "Mobile App"].map((item, i) => (
+                  <li key={i}>
+                    <a
+                      href={["/splitbill", "/dashboard", "/finance", "#"][i]}
+                      className="text-slate-300 hover:text-white transition-colors"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
 
             {/* Company */}
             <div>
-              <h4 className="text-lg font-semibold font-display mb-4">
-                Perusahaan
-              </h4>
-              <ul className="space-y-3 font-body">
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Tentang Kami
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Karir
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Press Kit
-                  </a>
-                </li>
+              <h4 className="text-base font-semibold mb-4">Perusahaan</h4>
+              <ul className="space-y-2 text-sm">
+                {["Tentang Kami", "Karir", "Blog", "Press Kit"].map((item, i) => (
+                  <li key={i}>
+                    <a
+                      href="#"
+                      className="text-slate-300 hover:text-white transition-colors"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
 
             {/* Support */}
             <div>
-              <h4 className="text-lg font-semibold font-display mb-4">
-                Dukungan
-              </h4>
-              <ul className="space-y-3 font-body">
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Kontak
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-slate-300 hover:text-white transition-colors"
-                  >
-                    Terms of Service
-                  </a>
-                </li>
+              <h4 className="text-base font-semibold mb-4">Dukungan</h4>
+              <ul className="space-y-2 text-sm">
+                {["Help Center", "Kontak", "Privacy Policy", "Terms of Service"].map((item, i) => (
+                  <li key={i}>
+                    <a
+                      href="#"
+                      className="text-slate-300 hover:text-white transition-colors"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-slate-700 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center">
-              <p className="text-slate-400 font-body text-sm">
+          <div className="border-t border-slate-700 pt-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <p className="text-slate-400 text-xs text-center sm:text-left">
                 © 2024 LihatBill. All rights reserved.
               </p>
-              <div className="flex space-x-6 mt-4 md:mt-0">
-                <a
-                  href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
-                >
-                  <span className="sr-only">Facebook</span>
-                  <div className="w-6 h-6 bg-slate-600 rounded"></div>
-                </a>
-                <a
-                  href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
-                >
-                  <span className="sr-only">Twitter</span>
-                  <div className="w-6 h-6 bg-slate-600 rounded"></div>
-                </a>
-                <a
-                  href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
-                >
-                  <span className="sr-only">Instagram</span>
-                  <div className="w-6 h-6 bg-slate-600 rounded"></div>
-                </a>
+              <div className="flex space-x-4">
+                {["Facebook", "Twitter", "Instagram"].map((social, i) => (
+                  <a
+                    key={i}
+                    href="#"
+                    className="text-slate-400 hover:text-white transition-colors"
+                  >
+                    <span className="sr-only">{social}</span>
+                    <div className="w-6 h-6 bg-slate-600 rounded"></div>
+                  </a>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

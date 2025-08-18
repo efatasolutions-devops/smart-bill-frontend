@@ -20,9 +20,6 @@ import ComingSoonOverlay from "@/components/coming-soon-overlay";
 
 export default function DashboardPage() {
   const [currentDate, setCurrentDate] = React.useState(new Date());
-  const [viewMode, setViewMode] = React.useState<"monthly" | "weekly">(
-    "monthly"
-  );
   const ctx = React.useContext(LayoutContext);
 
   // Mock data
@@ -37,157 +34,167 @@ export default function DashboardPage() {
   return (
     <div
       className={cn(
+        "p-4 sm:p-6",
         ctx?.isSidebarCollapsed ? "ml-20" : "ml-72",
-        "p-6 relative z-10 transition-all duration-200"
+        "transition-all duration-200 min-h-screen"
       )}
     >
-      {/* Header with Premium Badge */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-4">
-          <h1 className="text-4xl font-bold text-slate-800 font-display">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
             Dashboard
           </h1>
-          <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1 border-0">
-            <Crown className="w-4 h-4 mr-1" />
-            PRO FEATURE
-          </Badge>
+          <p className="text-sm text-slate-500 mt-1">Analisis keuangan kamu</p>
         </div>
+        <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1 self-start">
+          <Crown className="w-4 h-4 mr-1" />
+          PRO FEATURE
+        </Badge>
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-        <Card className="card-modern border-0 overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-slate-600 font-body">
-              Total Pengeluaran
-            </CardTitle>
-            <div className="w-12 h-12 bg-gradient-to-br from-red-400 via-red-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <DollarSign className="h-6 w-6 text-white" />
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 mb-8">
+        {/* Total Pengeluaran */}
+        <Card className="relative overflow-hidden">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm text-slate-600 font-medium">
+                Total Pengeluaran
+              </CardTitle>
+              <div className="w-10 h-10 bg-gradient-to-br from-red-400 via-red-500 to-pink-500 rounded-xl flex items-center justify-center shadow">
+                <DollarSign className="h-5 w-5 text-white" />
+              </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-slate-800 mb-2 font-display">
-              Rp {totalExpenses.toLocaleString()}
+            <div className="text-xl sm:text-2xl font-bold text-slate-800">
+              Rp {totalExpenses.toLocaleString("id-ID")}
             </div>
-            <p className="text-sm text-slate-500 font-body">Bulan ini</p>
+            <p className="text-xs sm:text-sm text-slate-500">Bulan ini</p>
           </CardContent>
           <div className="absolute inset-0 bg-gradient-to-br from-slate-100/80 to-slate-200/80 backdrop-blur-sm z-5"></div>
           <ComingSoonOverlay />
         </Card>
 
-        <Card className="card-modern border-0 overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-slate-600 font-body">
-              Total Pendapatan
-            </CardTitle>
-            <div className="w-12 h-12 bg-gradient-to-br from-green-400 via-green-500 to-emerald-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <TrendingUp className="h-6 w-6 text-white" />
+        {/* Total Pendapatan */}
+        <Card className="relative overflow-hidden">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm text-slate-600 font-medium">
+                Total Pendapatan
+              </CardTitle>
+              <div className="w-10 h-10 bg-gradient-to-br from-green-400 via-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow">
+                <TrendingUp className="h-5 w-5 text-white" />
+              </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-slate-800 mb-2 font-display">
-              Rp {totalIncome.toLocaleString()}
+            <div className="text-xl sm:text-2xl font-bold text-slate-800">
+              Rp {totalIncome.toLocaleString("id-ID")}
             </div>
-            <p className="text-sm text-slate-500 font-body">Bulan ini</p>
+            <p className="text-xs sm:text-sm text-slate-500">Bulan ini</p>
           </CardContent>
           <div className="absolute inset-0 bg-gradient-to-br from-slate-100/80 to-slate-200/80 backdrop-blur-sm z-5"></div>
           <ComingSoonOverlay />
         </Card>
 
-        <Card className="card-modern border-0 overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle className="text-sm font-medium text-slate-600 font-body">
-              Total Transaksi
-            </CardTitle>
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-400 via-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg">
-              <Receipt className="h-6 w-6 text-white" />
+        {/* Total Transaksi */}
+        <Card className="relative overflow-hidden">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm text-slate-600 font-medium">
+                Total Transaksi
+              </CardTitle>
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-400 via-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow">
+                <Receipt className="h-5 w-5 text-white" />
+              </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-bold text-slate-800 mb-2 font-display">
+            <div className="text-xl sm:text-2xl font-bold text-slate-800">
               {thisMonthTransactions}
             </div>
-            <p className="text-sm text-slate-500 font-body">
-              Transaksi tercatat
-            </p>
+            <p className="text-xs sm:text-sm text-slate-500">Transaksi tercatat</p>
           </CardContent>
           <div className="absolute inset-0 bg-gradient-to-br from-slate-100/80 to-slate-200/80 backdrop-blur-sm z-5"></div>
           <ComingSoonOverlay />
         </Card>
       </div>
 
-      {/* Calendar with Premium Overlay */}
-      <Card className="card-modern border-0 relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-100/50 to-slate-200/50 backdrop-blur-sm rounded-2xl z-10 flex items-center justify-center">
-          <div className="text-center p-8">
-            <div className="w-20 h-20 bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
-              <Lock className="w-10 h-10 text-white" />
+      {/* Calendar Section */}
+      <Card className="relative overflow-hidden">
+        {/* Premium Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-100/70 to-slate-200/70 backdrop-blur-sm rounded-xl z-10 flex items-center justify-center">
+          <div className="text-center p-6 max-w-xs mx-auto">
+            <div className="w-16 h-16 bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <Lock className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-slate-800 font-display mb-3">
-              Premium Feature
-            </h3>
-            <p className="text-slate-600 font-body mb-6 max-w-md">
-              Unlock advanced calendar tracking with detailed expense analytics
-              and insights
+            <h3 className="text-lg font-bold text-slate-800 mb-2">Premium Only</h3>
+            <p className="text-slate-600 text-sm mb-4">
+              Unlock advanced calendar tracking and analytics
             </p>
             <Button
               onClick={handleCalendarClick}
-              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-display font-semibold px-8 py-3 rounded-xl btn-modern shadow-xl"
+              className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-sm"
             >
-              <Crown className="w-4 h-4 mr-2" />
+              <Crown className="w-4 h-4 mr-1" />
               Upgrade to Pro
             </Button>
           </div>
         </div>
 
-        <CardHeader className="opacity-30">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-400 via-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <Calendar className="h-6 w-6 text-white" />
+        {/* Calendar Header */}
+        <CardHeader className="opacity-30 pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-400 via-purple-500 to-indigo-500 rounded-xl flex items-center justify-center shadow">
+                <Calendar className="h-5 w-5 text-white" />
               </div>
-              <div>
-                <CardTitle className="text-slate-800 font-display text-2xl">
+              <div className="ml-3">
+                <CardTitle className="text-base sm:text-xl font-semibold text-slate-800">
                   Kalender Keuangan
                 </CardTitle>
-                <p className="text-sm text-slate-500 mt-2 font-body">
-                  <span className="inline-flex items-center mr-6">
-                    <div className="w-3 h-3 bg-emerald-500 rounded-full mr-2"></div>
+                <div className="flex flex-wrap gap-3 mt-1 text-xs text-slate-500">
+                  <span className="flex items-center">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full mr-1"></div>
                     Pendapatan
                   </span>
-                  <span className="inline-flex items-center">
-                    <div className="w-3 h-3 bg-rose-500 rounded-full mr-2"></div>
+                  <span className="flex items-center">
+                    <div className="w-2 h-2 bg-rose-500 rounded-full mr-1"></div>
                     Pengeluaran
                   </span>
-                </p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex space-x-2">
               <Button
                 variant="outline"
                 size="sm"
-                className="glass-effect border-slate-200/50 bg-transparent"
+                className="text-xs px-2 opacity-50"
               >
                 Monthly
               </Button>
               <Button
                 variant="outline"
                 size="sm"
-                className="glass-effect border-slate-200/50 bg-transparent"
+                className="text-xs px-2 opacity-50"
               >
                 Weekly
               </Button>
             </div>
           </div>
-          <div className="flex justify-between items-center mt-6">
+
+          {/* Month Navigation */}
+          <div className="flex justify-between items-center mt-4">
             <Button
               variant="outline"
               size="sm"
-              className="glass-effect border-slate-200/50 bg-transparent"
+              className="w-10 h-10 p-0 opacity-50"
             >
               <ChevronLeft className="h-5 w-5" />
             </Button>
-            <h3 className="text-xl font-bold text-slate-800 font-display">
+            <h3 className="text-base sm:text-lg font-bold text-slate-800">
               {currentDate.toLocaleDateString("id-ID", {
                 month: "long",
                 year: "numeric",
@@ -196,35 +203,35 @@ export default function DashboardPage() {
             <Button
               variant="outline"
               size="sm"
-              className="glass-effect border-slate-200/50 bg-transparent"
+              className="w-10 h-10 p-0 opacity-50"
             >
               <ChevronRight className="h-5 w-5" />
             </Button>
           </div>
         </CardHeader>
+
+        {/* Calendar Grid */}
         <CardContent className="opacity-30">
-          <div className="grid grid-cols-7 gap-3 mb-6">
-            {[
-              "Minggu",
-              "Senin",
-              "Selasa",
-              "Rabu",
-              "Kamis",
-              "Jumat",
-              "Sabtu",
-            ].map((day) => (
+          {/* Day Headers */}
+          <div className="grid grid-cols-7 gap-1 mb-2">
+            {["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"].map((day) => (
               <div
                 key={day}
-                className="text-center font-bold text-slate-600 py-4 text-sm font-body tracking-wide"
+                className="text-center font-semibold text-xs text-slate-600 py-2"
               >
                 {day}
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-7 gap-3">
+
+          {/* Calendar Days */}
+          <div className="grid grid-cols-7 gap-1">
             {Array.from({ length: 35 }, (_, i) => (
-              <div key={i} className="h-32 glass-effect rounded-2xl p-3">
-                <div className="font-semibold text-sm text-slate-700 font-display">
+              <div
+                key={i}
+                className="h-16 sm:h-20 bg-white/50 rounded-lg p-1 text-xs border border-slate-200/30"
+              >
+                <div className="font-semibold text-slate-700 text-center">
                   {(i % 30) + 1}
                 </div>
               </div>

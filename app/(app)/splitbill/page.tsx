@@ -28,7 +28,7 @@ export type ReceiptData = {
   items: MenuItem[];
   subtotal: number;
   tax: TTaxObjTotalResultOCR;
-  serviceCharge: number; // Added serviceCharge field
+  serviceCharge: number;
   total: number;
   restaurant: string;
 };
@@ -36,7 +36,7 @@ export type ReceiptData = {
 export default function SplitBillApp() {
   const [currentStep, setCurrentStep] = useState(1);
   const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
-  const [receiptImage, setReceiptImage] = useState<string | null>(null); // Added receiptImage state
+  const [receiptImage, setReceiptImage] = useState<string | null>(null);
   const [people, setPeople] = useState<Person[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -48,9 +48,8 @@ export default function SplitBillApp() {
   ];
 
   const handleReceiptProcessed = (data: ReceiptData, imageUrl?: string) => {
-    // Added imageUrl parameter
     setReceiptData(data);
-    if (imageUrl) setReceiptImage(imageUrl); // Set receipt image
+    if (imageUrl) setReceiptImage(imageUrl);
     setCurrentStep(2);
   };
 
@@ -67,29 +66,29 @@ export default function SplitBillApp() {
   const resetApp = () => {
     setCurrentStep(1);
     setReceiptData(null);
-    setReceiptImage(null); // Reset receipt image
+    setReceiptImage(null);
     setPeople([]);
     setIsProcessing(false);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6">
+      <div className="max-w-3xl mx-auto w-full">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Split Bill</h1>
-          <p className="text-gray-600">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-2">Split Bill</h1>
+          <p className="text-gray-600 text-sm sm:text-base">
             Upload receipt, add friends, split the bill easily
           </p>
         </div>
 
         {/* Progress Steps */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-6 overflow-x-auto pb-2">
           <div className="flex items-center space-x-4">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
                 <div
-                  className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-colors ${
+                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors ${
                     currentStep >= step.id
                       ? "bg-blue-600 border-blue-600 text-white"
                       : step.completed
@@ -97,10 +96,10 @@ export default function SplitBillApp() {
                       : "bg-white border-gray-300 text-gray-400"
                   }`}
                 >
-                  {step.icon && <step.icon className="w-5 h-5" />}
+                  {step.icon && <step.icon className="w-4 h-4" />}
                 </div>
                 <span
-                  className={`ml-2 text-sm font-medium ${
+                  className={`ml-1 text-xs sm:text-sm font-medium ${
                     currentStep >= step.id ? "text-blue-600" : "text-gray-500"
                   }`}
                 >
@@ -108,7 +107,7 @@ export default function SplitBillApp() {
                 </span>
                 {index < steps.length - 1 && (
                   <div
-                    className={`w-8 h-0.5 ml-4 ${
+                    className={`w-6 h-0.5 ml-2 ${
                       currentStep > step.id ? "bg-blue-600" : "bg-gray-300"
                     }`}
                   />
@@ -119,9 +118,9 @@ export default function SplitBillApp() {
         </div>
 
         {/* Main Content */}
-        <Card className="shadow-lg">
+        <Card className="shadow-lg w-full max-w-3xl mx-auto">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
               {(() => {
                 const IconComponent = steps[currentStep - 1]?.icon;
                 return IconComponent ? (
@@ -151,7 +150,7 @@ export default function SplitBillApp() {
             {currentStep === 3 && receiptData && people.length > 0 && (
               <MenuAssignment
                 receiptData={receiptData}
-                receiptImage={receiptImage || undefined} // Pass receiptImage to MenuAssignment
+                receiptImage={receiptImage || undefined}
                 people={people}
                 onAssignmentComplete={handleAssignmentComplete}
                 onBack={() => setCurrentStep(2)}

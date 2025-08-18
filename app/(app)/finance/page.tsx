@@ -21,12 +21,12 @@ import {
 import { Sidebar } from "@/components/sidebar";
 import { PremiumModal } from "@/components/premium-modal";
 import ComingSoonOverlay from "@/components/coming-soon-overlay";
-
 import { cn } from "@/lib/utils";
 import LayoutContext from "@/context/layout-context";
 
 export default function FinancePage() {
   const ctx = React.useContext(LayoutContext);
+
   // Mock financial data
   const totalIncome = 10000000;
   const totalExpenses = 3750000;
@@ -90,121 +90,133 @@ export default function FinancePage() {
   return (
     <div
       className={cn(
+        "p-4 sm:p-6",
         ctx?.isSidebarCollapsed ? "ml-20" : "ml-72",
-        "p-6 relative z-10 transition-all duration-200"
+        "transition-all duration-200 min-h-screen"
       )}
     >
-      {/* Header with Premium Badge */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-4">
-          <h1 className="text-4xl font-bold text-slate-800 font-display">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
             Finance
           </h1>
-          <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1 border-0">
-            <Crown className="w-4 h-4 mr-1" />
-            PRO FEATURE
-          </Badge>
+          <p className="text-sm text-slate-500 mt-1">Manage your income & expenses</p>
         </div>
+        <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-3 py-1 self-start">
+          <Crown className="w-4 h-4 mr-1" />
+          PRO FEATURE
+        </Badge>
       </div>
 
       {/* Financial Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card className="card-modern border-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 font-body">
-              Total Income
-            </CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-500" />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8">
+        <Card className="relative overflow-hidden">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm text-slate-600 font-medium">
+                Total Income
+              </CardTitle>
+              <TrendingUp className="w-4 h-4 text-green-500" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600 font-display">
-              Rp {totalIncome.toLocaleString()}
+            <div className="text-lg sm:text-xl font-bold text-green-600">
+              Rp {totalIncome.toLocaleString("id-ID")}
             </div>
-            <p className="text-xs text-slate-500 font-body">Bulan ini</p>
+            <p className="text-xs text-slate-500">Bulan ini</p>
           </CardContent>
           <div className="absolute inset-0 bg-gradient-to-br from-slate-100/80 to-slate-200/80 backdrop-blur-sm z-5"></div>
           <ComingSoonOverlay />
         </Card>
 
-        <Card className="card-modern border-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 font-body">
-              Total Expenses
-            </CardTitle>
-            <TrendingDown className="h-4 w-4 text-red-500" />
+        <Card className="relative overflow-hidden">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm text-slate-600 font-medium">
+                Total Expenses
+              </CardTitle>
+              <TrendingDown className="w-4 h-4 text-red-500" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600 font-display">
-              Rp {totalExpenses.toLocaleString()}
+            <div className="text-lg sm:text-xl font-bold text-red-600">
+              Rp {totalExpenses.toLocaleString("id-ID")}
             </div>
-            <p className="text-xs text-slate-500 font-body">Bulan ini</p>
+            <p className="text-xs text-slate-500">Bulan ini</p>
           </CardContent>
           <div className="absolute inset-0 bg-gradient-to-br from-slate-100/80 to-slate-200/80 backdrop-blur-sm z-5"></div>
           <ComingSoonOverlay />
         </Card>
 
-        <Card className="card-modern border-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 font-body">
-              Net Income
-            </CardTitle>
-            <DollarSign className="h-4 w-4 text-accent-500" />
+        <Card className="relative overflow-hidden">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm text-slate-600 font-medium">
+                Net Income
+              </CardTitle>
+              <DollarSign className="w-4 h-4 text-slate-700" />
+            </div>
           </CardHeader>
           <CardContent>
             <div
-              className={`text-2xl font-bold font-display ${
+              className={`text-lg sm:text-xl font-bold ${
                 netIncome >= 0 ? "text-green-600" : "text-red-600"
               }`}
             >
-              Rp {netIncome.toLocaleString()}
+              Rp {netIncome.toLocaleString("id-ID")}
             </div>
-            <p className="text-xs text-slate-500 font-body">Sisa bulan ini</p>
+            <p className="text-xs text-slate-500">Sisa bulan ini</p>
           </CardContent>
           <div className="absolute inset-0 bg-gradient-to-br from-slate-100/80 to-slate-200/80 backdrop-blur-sm z-5"></div>
           <ComingSoonOverlay />
         </Card>
 
-        <Card className="card-modern border-0">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-slate-600 font-body">
-              Budget Usage
-            </CardTitle>
-            <Target className="h-4 w-4 text-accent-500" />
+        <Card className="relative overflow-hidden">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xs sm:text-sm text-slate-600 font-medium">
+                Budget Usage
+              </CardTitle>
+              <Target className="w-4 h-4 text-slate-700" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-800 font-display">
+            <div className="text-lg sm:text-xl font-bold text-slate-800">
               {budgetUsage}%
             </div>
-            <p className="text-xs text-slate-500 font-body">
-              Dari total budget
-            </p>
+            <p className="text-xs text-slate-500">Dari total budget</p>
           </CardContent>
           <div className="absolute inset-0 bg-gradient-to-br from-slate-100/80 to-slate-200/80 backdrop-blur-sm z-5"></div>
           <ComingSoonOverlay />
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Recent Transactions & Budget Tracking */}
+      <div className="grid grid-cols-1 gap-8">
         {/* Recent Transactions */}
-        <Card className="card-modern border-0">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle className="text-slate-800 font-display">
-                Transaksi Terbaru
-              </CardTitle>
-              <div className="relative">
-                <Button
-                  onClick={handleAddTransaction}
-                  size="sm"
-                  className="bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 font-body btn-modern"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Tambah
-                </Button>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
-                  <Crown className="w-3 h-3 text-white" />
-                </div>
+        <Card className="relative overflow-hidden">
+          <CardHeader className="pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <CardTitle className="text-lg font-semibold text-slate-800">
+                  Transaksi Terbaru
+                </CardTitle>
+                <CardDescription className="text-sm mt-1">
+                  5 transaksi terakhir
+                </CardDescription>
               </div>
+              <Button
+                onClick={handleAddTransaction}
+                size="sm"
+                className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 relative"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Tambah
+                <span className="absolute -top-2 -right-2 w-5 h-5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
+                  <Crown className="w-3 h-3 text-white" />
+                </span>
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -212,11 +224,11 @@ export default function FinancePage() {
               {transactions.slice(0, 5).map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="flex items-center justify-between p-3 border border-slate-200/50 rounded-xl glass-effect"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-3 border border-slate-200/50 rounded-lg bg-white"
                 >
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 mb-2 sm:mb-0">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      className={`w-9 h-9 rounded-full flex items-center justify-center ${
                         transaction.type === "income"
                           ? "bg-green-100"
                           : "bg-red-100"
@@ -229,26 +241,26 @@ export default function FinancePage() {
                       )}
                     </div>
                     <div>
-                      <p className="font-medium text-slate-800 font-body">
+                      <p className="font-medium text-slate-800 text-sm">
                         {transaction.description}
                       </p>
-                      <p className="text-sm text-slate-500 font-body">
+                      <p className="text-xs text-slate-500">
                         {new Date(transaction.date).toLocaleDateString("id-ID")}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p
-                      className={`font-semibold font-display ${
+                      className={`font-semibold text-sm ${
                         transaction.type === "income"
                           ? "text-green-600"
                           : "text-red-600"
                       }`}
                     >
-                      {transaction.type === "income" ? "+" : "-"}Rp{" "}
-                      {transaction.amount.toLocaleString()}
+                      {transaction.type === "income" ? "+" : "-"} Rp{" "}
+                      {transaction.amount.toLocaleString("id-ID")}
                     </p>
-                    <Badge variant="outline" className="text-xs font-body">
+                    <Badge variant="outline" className="text-xs">
                       {transaction.category}
                     </Badge>
                   </div>
@@ -261,12 +273,12 @@ export default function FinancePage() {
         </Card>
 
         {/* Budget Tracking */}
-        <Card className="card-modern border-0">
+        <Card className="relative overflow-hidden">
           <CardHeader>
-            <CardTitle className="text-slate-800 font-display">
+            <CardTitle className="text-lg font-semibold text-slate-800">
               Budget Tracking
             </CardTitle>
-            <CardDescription className="font-body">
+            <CardDescription className="text-sm">
               Pantau pengeluaran berdasarkan kategori
             </CardDescription>
           </CardHeader>
@@ -278,13 +290,13 @@ export default function FinancePage() {
 
                 return (
                   <div key={budget.category} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-slate-800 font-body">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                      <span className="font-medium text-slate-800 text-sm">
                         {budget.category}
                       </span>
-                      <span className="text-sm text-slate-500 font-body">
-                        Rp {budget.spent.toLocaleString()} / Rp{" "}
-                        {budget.budgeted.toLocaleString()}
+                      <span className="text-xs text-slate-500 mt-1 sm:mt-0">
+                        Rp {budget.spent.toLocaleString("id-ID")} / Rp{" "}
+                        {budget.budgeted.toLocaleString("id-ID")}
                       </span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-2">
@@ -301,15 +313,14 @@ export default function FinancePage() {
                     </div>
                     <div className="flex justify-between text-xs">
                       <span
-                        className={`font-body ${
+                        className={`${
                           isOverBudget ? "text-red-600" : "text-slate-500"
                         }`}
                       >
                         {percentage.toFixed(0)}% terpakai
                       </span>
-                      <span className="text-slate-500 font-body">
-                        Sisa: Rp{" "}
-                        {(budget.budgeted - budget.spent).toLocaleString()}
+                      <span className="text-slate-500">
+                        Sisa: Rp {(budget.budgeted - budget.spent).toLocaleString("id-ID")}
                       </span>
                     </div>
                   </div>
@@ -321,6 +332,13 @@ export default function FinancePage() {
           <ComingSoonOverlay />
         </Card>
       </div>
+
+      {/* Premium Modal */}
+      <PremiumModal
+        isOpen={ctx?.showPremiumModal || false}
+        onClose={() => ctx?.setShowPremiumModal(false)}
+        feature="Finance Management & Analytics"
+      />
     </div>
   );
 }

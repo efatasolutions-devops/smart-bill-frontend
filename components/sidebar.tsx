@@ -20,7 +20,13 @@ import Cookies from "js-cookie";
 
 import LayoutContext from "@/context/layout-context";
 
-export function Sidebar() {
+export function Sidebar({
+  isOpen = false,
+  onClose,
+}: {
+  isOpen?: boolean;
+  onClose?: () => void;
+}) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -57,15 +63,28 @@ export function Sidebar() {
     ["token", "username"]?.forEach((keyCookie) => {
       Cookies?.remove(keyCookie);
     });
-
     router?.push("/login");
+    onClose?.(); // Tutup sidebar saat logout
   };
 
   return (
     <>
+      {/* Overlay untuk mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={onClose}
+        ></div>
+      )}
+
+      {/* Sidebar Utama */}
       <div
-        className={`fixed overflow-hidden left-0 top-0 h-full glass-effect border-r border-white/20 transition-all duration-200 z-50 ${
+        className={`fixed overflow-hidden left-0 top-0 h-full glass-effect border-r border-white/20 transition-all duration-300 z-50 transform ${
           ctx?.isSidebarCollapsed ? "w-20" : "w-72"
+        } ${
+          isOpen
+            ? "translate-x-0"
+            : "-translate-x-full md:translate-x-0" // Sembunyi di mobile, muncul di desktop
         }`}
       >
         <div className="flex flex-col h-full">
@@ -92,9 +111,10 @@ export function Sidebar() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() =>
-                  ctx?.setIsSidebarCollapsed(!ctx?.isSidebarCollapsed)
-                }
+                onClick={() => {
+                  if (onClose) onClose();
+                  ctx?.setIsSidebarCollapsed(!ctx?.isSidebarCollapsed);
+                }}
                 className="hover:bg-white/10"
               >
                 {ctx?.isSidebarCollapsed ? (
@@ -115,6 +135,7 @@ export function Sidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={onClose} // Tutup sidebar saat klik (penting untuk mobile)
                     className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${
                       isActive
                         ? "bg-primary-100/80 text-primary-700 shadow-sm"
@@ -148,8 +169,9 @@ export function Sidebar() {
             </nav>
           </div>
 
+          {/* Logout Button */}
           <div className="p-4">
-            <Button variant="destructive" onClick={handleLogout}>
+            <Button variant="destructive" onClick={handleLogout} className="w-full">
               Logout
             </Button>
           </div>
@@ -167,7 +189,13 @@ export function Sidebar() {
                 <p className="text-xs text-amber-700 mb-3 font-body">
                   Unlock all features and get unlimited access
                 </p>
-                <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-sm font-body btn-modern">
+                <Button
+                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-sm font-body"
+                  onClick={() => {
+                    ctx?.setShowPremiumModal(true);
+                    onClose?.();
+                  }}
+                >
                   <Sparkles className="w-4 h-4 mr-2" />
                   Get Pro
                 </Button>
@@ -177,13 +205,13 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Main content spacer */}
+      {/* Spacer untuk konten utama */}
       <div
-        className={`${
+        className={`transition-all duration-300 ${
           ctx?.isSidebarCollapsed ? "ml-20" : "ml-72"
-        } transition-all duration-300`}
+        }`}
       >
-        {/* This div creates space for the sidebar */}
+        {/* Ini tetap sebagai placeholder untuk margin */}
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useState, useEffect } from "react"; // <-- Tambahkan useEffect di sini
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Mail, Lock, User } from "lucide-react";
+import { ArrowLeft, Lock, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
@@ -25,47 +25,65 @@ type LoginProps = {
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [loadingLogin, setLoadingLogin] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const id = useId();
 
   const {
-    control,
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm({
+    watch,
+  } = useForm<LoginProps>({
     mode: "onChange",
   });
 
-  const handleLogin = (data: LoginProps) => {
-    if (data?.email && data?.password) {
-      setLoadingLogin(true);
+  const email = watch("email");
+  const password = watch("password");
 
-      axios
-        .post("/api/login", data)
-        ?.then((response) => {
-          if (response?.data) {
-            const resData = response?.data;
-
-            Cookies.set("token", resData?.token, { expires: 7 });
-            router.push("/beranda");
-          }
-        })
-        ?.finally(() => {
-          setLoadingLogin(false);
-        });
-      // Cookies.set("username", username, { expires: 7 });
-      // router.push("/beranda");
+  // ✅ Gunakan useEffect langsung, bukan React.useEffect
+  useEffect(() => {
+    if (email || password) {
+      setErrorMessage(null);
     }
-  };
+  }, [email, password]);
 
-  const handleGoogleLogin = () => {
-    Cookies.set("token", id, { expires: 7 });
-    Cookies.set("username", username, { expires: 7 });
-    router.push("/beranda");
+  const handleLogin = (data: LoginProps) => {
+    if (!data.email || !data.password) return;
+
+    setLoadingLogin(true);
+    setErrorMessage(null);
+
+    axios
+      .post("/api/login", data)
+      .then((response) => {
+        if (response?.data) {
+          const resData = response.data;
+
+          if (resData.verified === false) {
+            setErrorMessage("Email Akun Belum Terverifikasi");
+            return;
+          }
+
+          Cookies.set("token", resData.token, { expires: 7 });
+          router.push("/beranda");
+        }
+      })
+      .catch((err) => {
+        const status = err.response?.status;
+        const backendMsg = err.response?.data?.message;
+
+        if (status === 401 || status === 400) {
+          setErrorMessage("Password / Username tidak dikenali");
+        } else if (status === 403 || backendMsg?.includes("not verified")) {
+          setErrorMessage("Email Akun Belum Terverifikasi");
+        } else {
+          setErrorMessage("Terjadi kesalahan. Coba lagi.");
+        }
+      })
+      .finally(() => {
+        setLoadingLogin(false);
+      });
   };
 
   const handleRegister = () => {
@@ -92,9 +110,7 @@ export default function LoginPage() {
             <div className="mx-auto w-16 h-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-2xl flex items-center justify-center mb-6">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <CardTitle className="text-2xl text-slate-800 mb-2">
-              Welcome Back
-            </CardTitle>
+            <CardTitle className="text-2xl text-slate-800 mb-2">Welcome Back</CardTitle>
             <CardDescription className="text-slate-600">
               Masuk untuk mengakses dashboard dan fitur lengkap LihatBill
             </CardDescription>
@@ -106,10 +122,11 @@ export default function LoginPage() {
                   <Label htmlFor="email" className="text-slate-700 font-medium">
                     Email
                   </Label>
-                  <div className="email">
+                  <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                     <Input
                       {...register("email", {
+                        required: "Email wajib diisi",
                         pattern: {
                           value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                           message: "Format email tidak valid",
@@ -120,62 +137,47 @@ export default function LoginPage() {
                       className="pl-10 border-slate-300 focus:border-primary-500 focus:ring-primary-500 rounded-lg"
                     />
                   </div>
-
                   {errors.email && (
-                    <p className="text-red-500">
-                      {String(errors.email?.message) ||
-                        "This field is required"}
-                    </p>
+                    <p className="text-red-500 text-sm">{String(errors.email.message)}</p>
                   )}
                 </div>
 
                 <div className="space-y-2">
-                  <Label
-                    htmlFor="password"
-                    className="text-slate-700 font-medium"
-                  >
+                  <Label htmlFor="password" className="text-slate-700 font-medium">
                     Password
                   </Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
                     <Input
-                      {...register("password")}
+                      {...register("password", {
+                        required: "Password wajib diisi",
+                      })}
                       id="password"
                       type="password"
                       placeholder="Masukkan password"
                       className="pl-10 border-slate-300 focus:border-primary-500 focus:ring-primary-500 rounded-lg"
                     />
                   </div>
+                  {errors.password && (
+                    <p className="text-red-500 text-sm">{String(errors.password.message)}</p>
+                  )}
                 </div>
               </div>
 
+              {errorMessage && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mt-4">
+                  {errorMessage}
+                </div>
+              )}
+
               <Button
-                onClick={handleLogin}
-                className="w-full bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-medium py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                type="submit"
+                disabled={loadingLogin}
+                className="w-full mt-8 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-medium py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                Login
+                {loadingLogin ? "Memuat..." : "Login"}
               </Button>
             </form>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <Separator className="w-full bg-slate-200" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-4 text-slate-500 font-medium">
-                  Atau
-                </span>
-              </div>
-            </div>
-
-            <Button
-              onClick={handleGoogleLogin}
-              variant="outline"
-              className="w-full border-slate-300 text-slate-700 hover:bg-slate-50 bg-transparent py-3 rounded-lg font-medium transition-all duration-300"
-            >
-              <Mail className="w-4 h-4 mr-2" />
-              Login dengan Google
-            </Button>
           </CardContent>
         </Card>
 
@@ -184,9 +186,7 @@ export default function LoginPage() {
             Belum punya akun?{" "}
             <span
               className="text-primary-600 font-medium cursor-pointer hover:underline"
-              onClick={() => {
-                handleRegister();
-              }}
+              onClick={handleRegister}
             >
               Daftar sekarang
             </span>

@@ -155,7 +155,6 @@ export default function MenuAssignment({
     setAssignments((prev) =>
       prev.filter((assignment) => assignment.itemId !== itemId)
     );
-
     toast({
       title: "Item deleted",
       description: "Item has been removed from the receipt",
@@ -232,7 +231,6 @@ export default function MenuAssignment({
 
     const payload = buildSummaryPayload(updatedPeople, receiptData);
 
-    console.log("dd;; ", process.env);
     try {
       const { data } = await axios(
         `${process.env.NEXT_PUBLIC_BASE_URL}/splitbill`,
@@ -261,19 +259,6 @@ export default function MenuAssignment({
     }
   };
 
-  // const proceedToSummary = () => {
-  //   if (!isAssignmentComplete()) {
-  //     toast({
-  //       title: "Assignment incomplete",
-  //       description: "Please assign all items to at least one person",
-  //       variant: "destructive",
-  //     });
-  //     return;
-  //   }
-
-  //   onAssignmentComplete(updatedPeople);
-  // };
-
   const getItemsSubtotal = (): number => {
     return editableItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
@@ -284,7 +269,6 @@ export default function MenuAssignment({
   const getTaxPerPerson = (personTotal: number): number => {
     const itemsSubtotal = getItemsSubtotal();
     if (itemsSubtotal === 0) return 0;
-
     return (receiptData.tax.total_tax * personTotal) / itemsSubtotal;
   };
 
@@ -295,20 +279,18 @@ export default function MenuAssignment({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full max-w-3xl mx-auto">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h3 className="text-lg font-semibold">Assign Menu Items</h3>
-          <p className="text-gray-600">
+          <p className="text-gray-600 text-sm">
             Edit items if needed and assign who shares each menu
           </p>
         </div>
         <Badge variant={isAssignmentComplete() ? "default" : "secondary"}>
-          {
-            editableItems.filter((item) => getAssignedPeopleCount(item.id) > 0)
-              .length
-          }{" "}
+          {editableItems.filter((item) => getAssignedPeopleCount(item.id) > 0)
+            .length}{" "}
           / {editableItems.length} Assigned
         </Badge>
       </div>
@@ -323,7 +305,7 @@ export default function MenuAssignment({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="max-w-md mx-auto">
+            <div className="max-w-xs sm:max-w-sm md:max-w-md mx-auto">
               <img
                 src={receiptImage || "/placeholder.svg"}
                 alt="Receipt"
@@ -337,36 +319,36 @@ export default function MenuAssignment({
       {/* Overall Summary */}
       <Card className="bg-slate-50 border-slate-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-slate-900">
+          <CardTitle className="flex items-center gap-2 text-slate-900 text-base">
             <Calculator className="w-5 h-5" />
             Receipt Summary
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs sm:text-sm">
             <div className="text-center">
               <p className="text-slate-600">Items Subtotal</p>
-              <p className="font-semibold text-lg">
+              <p className="font-semibold">
                 {new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
                   minimumFractionDigits: 0,
-                }).format(Number(getItemsSubtotal() || 0))}
+                }).format(getItemsSubtotal() || 0)}
               </p>
             </div>
             <div className="text-center">
               <p className="text-slate-600">Tax</p>
-              <p className="font-semibold text-lg">
+              <p className="font-semibold">
                 {new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
                   minimumFractionDigits: 0,
-                }).format(Number(receiptData.tax?.total_tax || 0))}
+                }).format(receiptData.tax?.total_tax || 0)}
               </p>
             </div>
             <div className="text-center">
               <p className="text-slate-600">Service</p>
-              <p className="font-semibold text-lg">
+              <p className="font-semibold">
                 {new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
@@ -376,15 +358,15 @@ export default function MenuAssignment({
             </div>
             <div className="text-center">
               <p className="text-slate-600">Grand Total</p>
-              <p className="font-semibold text-lg text-blue-600">
+              <p className="font-semibold text-blue-600">
                 {new Intl.NumberFormat("id-ID", {
                   style: "currency",
                   currency: "IDR",
                   minimumFractionDigits: 0,
                 }).format(
-                  Number(getItemsSubtotal() || 0) +
-                    Number(receiptData.tax?.total_tax || 0) +
-                    Number(receiptData.serviceCharge || 0)
+                  (getItemsSubtotal() || 0) +
+                    (receiptData.tax?.total_tax || 0) +
+                    (receiptData.serviceCharge || 0)
                 )}
               </p>
             </div>
@@ -398,53 +380,59 @@ export default function MenuAssignment({
           {!isAddingNewItem ? (
             <Button
               variant="ghost"
-              className="w-full h-16 text-gray-600 hover:text-gray-900"
+              className="w-full h-12 text-gray-600 hover:text-gray-900 text-sm"
               onClick={() => setIsAddingNewItem(true)}
             >
-              <Plus className="w-5 h-5 mr-2" />
+              <Plus className="w-4 h-4 mr-2" />
               Add Manual Item (e.g., Parking, Tip)
             </Button>
           ) : (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-3">
                 <Input
                   placeholder="Item name (e.g., Parking)"
                   value={newItem.name}
                   onChange={(e) =>
                     setNewItem((prev) => ({ ...prev, name: e.target.value }))
                   }
+                  className="text-sm"
                 />
-                <Input
-                  type="number"
-                  placeholder="Price"
-                  value={newItem.price || ""}
-                  onChange={(e) =>
-                    setNewItem((prev) => ({
-                      ...prev,
-                      price: Number(e.target.value),
-                    }))
-                  }
-                />
-                <Input
-                  type="number"
-                  placeholder="Quantity"
-                  value={newItem.quantity}
-                  onChange={(e) =>
-                    setNewItem((prev) => ({
-                      ...prev,
-                      quantity: Number(e.target.value),
-                    }))
-                  }
-                />
+                <div className="grid grid-cols-2 gap-3">
+                  <Input
+                    type="number"
+                    placeholder="Price"
+                    value={newItem.price || ""}
+                    onChange={(e) =>
+                      setNewItem((prev) => ({
+                        ...prev,
+                        price: Number(e.target.value),
+                      }))
+                    }
+                    className="text-sm"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Qty"
+                    value={newItem.quantity}
+                    onChange={(e) =>
+                      setNewItem((prev) => ({
+                        ...prev,
+                        quantity: Number(e.target.value),
+                      }))
+                    }
+                    className="text-sm"
+                  />
+                </div>
               </div>
-              <div className="flex gap-2">
-                <Button onClick={addNewItem} size="sm">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button onClick={addNewItem} size="sm" className="flex-1">
                   Add Item
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => setIsAddingNewItem(false)}
                   size="sm"
+                  className="flex-1"
                 >
                   Cancel
                 </Button>
@@ -466,14 +454,12 @@ export default function MenuAssignment({
             <Card
               key={item.id}
               className={`${
-                isAssigned
-                  ? "border-green-200 bg-green-50"
-                  : "border-orange-200 bg-orange-50"
+                isAssigned ? "border-green-200 bg-green-50" : "border-orange-200 bg-orange-50"
               }`}
             >
               <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
+                <div className="flex flex-col sm:flex-row justify-between gap-3">
+                  <div className="flex-1 min-w-0">
                     {isEditing ? (
                       <div className="space-y-2">
                         <Input
@@ -481,9 +467,9 @@ export default function MenuAssignment({
                           onChange={(e) =>
                             updateItem(item.id, "name", e.target.value)
                           }
-                          className="font-medium"
+                          className="font-medium text-sm"
                         />
-                        <div className="flex gap-2">
+                        <div className="grid grid-cols-2 gap-2">
                           <Input
                             type="number"
                             value={item.price}
@@ -491,6 +477,7 @@ export default function MenuAssignment({
                               updateItem(item.id, "price", e.target.value)
                             }
                             placeholder="Price"
+                            className="text-sm"
                           />
                           <Input
                             type="number"
@@ -499,6 +486,7 @@ export default function MenuAssignment({
                               updateItem(item.id, "quantity", e.target.value)
                             }
                             placeholder="Qty"
+                            className="text-sm"
                           />
                         </div>
                         <div className="flex gap-2">
@@ -519,30 +507,30 @@ export default function MenuAssignment({
                       </div>
                     ) : (
                       <>
-                        <CardTitle className="text-base flex items-center gap-2">
-                          <Utensils className="w-4 h-4" />
-                          {item.name}
+                        <CardTitle className="text-sm sm:text-base flex items-center gap-2 truncate">
+                          <Utensils className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">{item.name}</span>
                           {item.isManual && (
                             <Badge variant="secondary" className="text-xs">
                               Manual
                             </Badge>
                           )}
                         </CardTitle>
-                        <p className="text-sm text-gray-600">
-                          Rp {item.price.toLocaleString("id-ID")} ×{" "}
-                          {item.quantity} = Rp{" "}
+                        <p className="text-xs sm:text-sm text-gray-600 truncate">
+                          Rp {item.price.toLocaleString("id-ID")} × {item.quantity} = Rp{" "}
                           {totalItemCost.toLocaleString("id-ID")}
                         </p>
                       </>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-end gap-2 sm:items-center">
                     {!isEditing && (
-                      <>
+                      <div className="flex gap-1">
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => setEditingItemId(item.id)}
+                          aria-label="Edit item"
                         >
                           <Edit3 className="w-3 h-3" />
                         </Button>
@@ -551,28 +539,24 @@ export default function MenuAssignment({
                             size="sm"
                             variant="ghost"
                             onClick={() => deleteItem(item.id)}
+                            aria-label="Delete item"
                           >
                             <Trash2 className="w-3 h-3" />
                           </Button>
                         )}
-                      </>
+                      </div>
                     )}
-                    <div className="text-right">
+                    <div className="text-right text-xs sm:text-sm">
                       <Badge
                         variant={isAssigned ? "default" : "destructive"}
-                        className="flex items-center gap-1"
+                        className="flex items-center gap-1 px-2 py-0.5"
                       >
                         <Users className="w-3 h-3" />
-                        {assignedCount}{" "}
-                        {assignedCount === 1 ? "person" : "people"}
+                        {assignedCount}
                       </Badge>
                       {assignedCount > 1 && (
                         <p className="text-xs text-gray-600 mt-1">
-                          Rp{" "}
-                          {Math.round(
-                            totalItemCost / assignedCount
-                          ).toLocaleString("id-ID")}{" "}
-                          per person
+                          Rp {Math.round(totalItemCost / assignedCount).toLocaleString("id-ID")} per
                         </p>
                       )}
                     </div>
@@ -581,11 +565,12 @@ export default function MenuAssignment({
               </CardHeader>
               <CardContent className="space-y-3">
                 {/* Quick Actions */}
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => assignToAllPeople(item.id)}
+                    className="text-xs"
                   >
                     Assign to All
                   </Button>
@@ -593,43 +578,37 @@ export default function MenuAssignment({
                     size="sm"
                     variant="outline"
                     onClick={() => clearItemAssignments(item.id)}
+                    className="text-xs"
                   >
                     Clear
                   </Button>
                 </div>
 
                 {/* Person Assignments */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-2">
                   {people.map((person) => {
-                    const isPersonAssignedToItem = isPersonAssigned(
-                      item.id,
-                      person.id
-                    );
-
-                    const personCost =
-                      isPersonAssignedToItem && assignedCount > 0
-                        ? totalItemCost / assignedCount
-                        : 0;
+                    const isPersonAssignedToItem = isPersonAssigned(item.id, person.id);
+                    const personCost = isPersonAssignedToItem && assignedCount > 0
+                      ? totalItemCost / assignedCount
+                      : 0;
 
                     return (
                       <div
                         key={person.id}
                         className="flex items-center justify-between p-3 bg-white rounded-lg border"
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                             <span className="text-sm font-medium text-blue-600">
                               {person.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
-                          <div>
-                            <p className="font-medium text-sm">{person.name}</p>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium text-sm truncate">{person.name}</p>
                             {isPersonAssignedToItem && (
-                              <p className="text-xs text-gray-600">
-                                Rp{" "}
-                                {Math.round(personCost).toLocaleString("id-ID")}
-                                {assignedCount > 1 &&
-                                  ` (shared with ${assignedCount - 1} others)`}
+                              <p className="text-xs text-gray-600 truncate">
+                                Rp {Math.round(personCost).toLocaleString("id-ID")}
+                                {assignedCount > 1 && ` (shared with ${assignedCount - 1} others)`}
                               </p>
                             )}
                           </div>
@@ -653,13 +632,13 @@ export default function MenuAssignment({
       {/* Live Totals */}
       <Card className="bg-blue-50 border-blue-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-900">
+          <CardTitle className="flex items-center gap-2 text-blue-900 text-base">
             <Calculator className="w-5 h-5" />
             Live Calculation
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-3">
             {updatedPeople.map((person) => {
               const tax = getTaxPerPerson(person.total);
               const service = getServicePerPerson(person.total);
@@ -668,21 +647,17 @@ export default function MenuAssignment({
               return (
                 <div key={person.id} className="bg-white p-4 rounded-lg border">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                       <span className="text-xs font-medium text-blue-600">
                         {person.name.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <h4 className="font-medium">{person.name}</h4>
+                    <h4 className="font-medium text-sm truncate">{person.name}</h4>
                   </div>
-                  <div className="space-y-1 text-sm">
+                  <div className="space-y-1 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">
-                        Items ({person.items.length})
-                      </span>
-                      <span>
-                        Rp {Math.round(person.total).toLocaleString("id-ID")}
-                      </span>
+                      <span className="text-gray-600">Items ({person.items.length})</span>
+                      <span>Rp {Math.round(person.total).toLocaleString("id-ID")}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tax</span>
@@ -690,15 +665,11 @@ export default function MenuAssignment({
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Service</span>
-                      <span>
-                        Rp {Math.round(service).toLocaleString("id-ID")}
-                      </span>
+                      <span>Rp {Math.round(service).toLocaleString("id-ID")}</span>
                     </div>
                     <div className="flex justify-between font-medium border-t pt-1">
                       <span>Total</span>
-                      <span>
-                        Rp {Math.round(finalTotal).toLocaleString("id-ID")}
-                      </span>
+                      <span>Rp {Math.round(finalTotal).toLocaleString("id-ID")}</span>
                     </div>
                   </div>
                 </div>
@@ -709,16 +680,19 @@ export default function MenuAssignment({
       </Card>
 
       {/* Navigation */}
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={onBack}>
+      <div className="flex flex-col sm:flex-row justify-between gap-3">
+        <Button
+          variant="outline"
+          onClick={onBack}
+          className="w-full sm:w-auto justify-center"
+        >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Names
         </Button>
-
         <Button
           onClick={proceedToSummary}
           disabled={!isAssignmentComplete()}
-          className="px-6"
+          className="w-full sm:w-auto justify-center"
         >
           Continue to Summary
           <ArrowRight className="w-4 h-4 ml-2" />
