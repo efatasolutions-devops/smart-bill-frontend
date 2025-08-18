@@ -18,10 +18,7 @@ import {
   Plus,
   Crown,
 } from "lucide-react";
-import { Sidebar } from "@/components/sidebar";
-import { PremiumModal } from "@/components/premium-modal";
 import ComingSoonOverlay from "@/components/coming-soon-overlay";
-import { cn } from "@/lib/utils";
 import LayoutContext from "@/context/layout-context";
 
 export default function FinancePage() {
@@ -88,13 +85,7 @@ export default function FinancePage() {
   };
 
   return (
-    <div
-      className={cn(
-        "p-4 sm:p-6",
-        ctx?.isSidebarCollapsed ? "ml-20" : "ml-72",
-        "transition-all duration-200 min-h-screen"
-      )}
-    >
+    <div className="w-full">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>
@@ -111,6 +102,7 @@ export default function FinancePage() {
 
       {/* Financial Overview */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8">
+        {/* Total Income */}
         <Card className="relative overflow-hidden">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
@@ -130,6 +122,7 @@ export default function FinancePage() {
           <ComingSoonOverlay />
         </Card>
 
+        {/* Total Expenses */}
         <Card className="relative overflow-hidden">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
@@ -149,6 +142,7 @@ export default function FinancePage() {
           <ComingSoonOverlay />
         </Card>
 
+        {/* Net Income */}
         <Card className="relative overflow-hidden">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
@@ -172,6 +166,7 @@ export default function FinancePage() {
           <ComingSoonOverlay />
         </Card>
 
+        {/* Budget Usage */}
         <Card className="relative overflow-hidden">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
@@ -193,7 +188,7 @@ export default function FinancePage() {
       </div>
 
       {/* Recent Transactions & Budget Tracking */}
-      <div className="grid grid-cols-1 gap-8">
+      <div className="space-y-8">
         {/* Recent Transactions */}
         <Card className="relative overflow-hidden">
           <CardHeader className="pb-4">
@@ -241,7 +236,7 @@ export default function FinancePage() {
                       )}
                     </div>
                     <div>
-                      <p className="font-medium text-slate-800 text-sm">
+                      <p className="font-medium text-slate-800 text-sm truncate max-w-[180px]">
                         {transaction.description}
                       </p>
                       <p className="text-xs text-slate-500">
@@ -332,13 +327,6 @@ export default function FinancePage() {
           <ComingSoonOverlay />
         </Card>
       </div>
-
-      {/* Premium Modal */}
-      <PremiumModal
-        isOpen={ctx?.showPremiumModal || false}
-        onClose={() => ctx?.setShowPremiumModal(false)}
-        feature="Finance Management & Analytics"
-      />
     </div>
   );
 }

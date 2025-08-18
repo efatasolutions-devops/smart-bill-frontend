@@ -14,7 +14,6 @@ import {
   Crown,
   Lock,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import LayoutContext from "@/context/layout-context";
 import ComingSoonOverlay from "@/components/coming-soon-overlay";
 
@@ -32,13 +31,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div
-      className={cn(
-        "p-4 sm:p-6",
-        ctx?.isSidebarCollapsed ? "ml-20" : "ml-72",
-        "transition-all duration-200 min-h-screen"
-      )}
-    >
+    <div className="w-full">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <div>

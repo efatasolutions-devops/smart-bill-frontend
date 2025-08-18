@@ -10,10 +10,9 @@ import { ReactNode, useState } from "react";
 export default function Layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile: drawer, Desktop: collapse
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  // Tentukan apakah halaman saat ini adalah splitbill
   const isSplitBillPage = pathname.startsWith("/splitbill");
 
   return (
@@ -58,7 +57,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           </svg>
         </button>
 
-        {/* Sidebar (Off-canvas di mobile, normal di desktop) */}
+        {/* Sidebar */}
         <Sidebar
           isOpen={isSidebarOpen}
           isCollapsed={isSidebarCollapsed}
@@ -66,20 +65,17 @@ export default function Layout({ children }: { children: ReactNode }) {
         />
 
         {/* Main Content */}
-        <div
+        <main
           className={cn(
             "relative z-10 transition-all duration-200 min-h-screen",
-            isSplitBillPage
-              ? "ml-0" // Split bill: no sidebar margin
-              : "md:ml-20", // Desktop: sidebar width when collapsed
-            !isSplitBillPage &&
-              !isSidebarCollapsed &&
-              "md:ml-72" // Desktop: full sidebar width
+            "p-4 sm:p-6", // ✅ Pindahkan padding ke sini
+            isSplitBillPage ? "ml-0" : "md:ml-20",
+            !isSplitBillPage && !isSidebarCollapsed && "md:ml-72"
           )}
         >
-          {/* Tambahkan padding untuk mobile jika perlu */}
-          <div className="min-h-screen">{children}</div>
-        </div>
+          {/* ✅ Hapus div berlapis, langsung render children */}
+          {children}
+        </main>
       </LayoutContext.Provider>
 
       {/* Premium Modal */}
