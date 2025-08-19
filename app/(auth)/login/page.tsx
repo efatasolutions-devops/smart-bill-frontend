@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, useEffect } from "react"; // <-- Tambahkan useEffect di sini
+import { useId, useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Lock, User } from "lucide-react";
+import { Lock, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useForm } from "react-hook-form";
@@ -41,7 +41,6 @@ export default function LoginPage() {
   const email = watch("email");
   const password = watch("password");
 
-  // ✅ Gunakan useEffect langsung, bukan React.useEffect
   useEffect(() => {
     if (email || password) {
       setErrorMessage(null);
@@ -93,31 +92,21 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="outline"
-            onClick={() => router.push("/")}
-            className="border-slate-300 hover:bg-slate-50"
-            size="sm"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Kembali
-          </Button>
-        </div>
-
+        {/* Card Utama Login */}
         <Card className="border-0 bg-white/80 backdrop-blur-sm shadow-2xl">
           <CardHeader className="text-center pb-6 pt-8">
             <div className="mx-auto w-16 h-16 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-2xl flex items-center justify-center mb-6">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <CardTitle className="text-2xl text-slate-800 mb-2">Welcome Back</CardTitle>
+            <CardTitle className="text-2xl text-slate-800 mb-2">Halo, Selamat Datang!</CardTitle>
             <CardDescription className="text-slate-600">
-              Masuk untuk mengakses dashboard dan fitur lengkap LihatBill
+              Silakan masuk ke akun yang telah terdaftar untuk mengakses Lihat Bill Beta
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 px-8 pb-8">
             <form onSubmit={handleSubmit(handleLogin)}>
               <div className="space-y-4">
+                {/* Input Email */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-slate-700 font-medium">
                     Email
@@ -142,6 +131,7 @@ export default function LoginPage() {
                   )}
                 </div>
 
+                {/* Input Password */}
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-slate-700 font-medium">
                     Password
@@ -164,12 +154,14 @@ export default function LoginPage() {
                 </div>
               </div>
 
+              {/* Pesan Error */}
               {errorMessage && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mt-4">
                   {errorMessage}
                 </div>
               )}
 
+              {/* Tombol Login */}
               <Button
                 type="submit"
                 disabled={loadingLogin}
@@ -181,6 +173,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
 
+        {/* Link Daftar */}
         <div className="text-center mt-6">
           <p className="text-slate-500 text-sm">
             Belum punya akun?{" "}

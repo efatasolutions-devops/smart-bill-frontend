@@ -145,7 +145,7 @@ export default function Register() {
               </div>
               <CardTitle className="text-2xl text-slate-800 mb-2">Daftar</CardTitle>
               <CardDescription className="text-slate-600">
-                Buat akun untuk mengakses dashboard dan fitur lengkap LihatBill
+                Buat akun untuk mengakses Lihat Bill Beta.<br /> Gunakan alamat email aktif, untuk dapat verifikasi ya!
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 px-8 pb-8">

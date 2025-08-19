@@ -237,8 +237,7 @@ export default function ReceiptUpload({
                 Tips for best results:
               </h4>
               <ul className="text-xs sm:text-sm text-blue-800 space-y-1">
-                <li>• Make sure the receipt is clearly visible and well-lit</li>
-                <li>• Avoid shadows or reflections on the receipt</li>
+                <li>• Pastikan foto struk sudah ada di galeri kalian ya</li>
                 <li>• Supported formats: JPG, PNG, HEIC</li>
                 <li>• Maximum file size: 10MB</li>
               </ul>

@@ -40,11 +40,12 @@ export default function SplitBillApp() {
   const [people, setPeople] = useState<Person[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Definisi step dengan fungsi onClick
   const steps = [
-    { id: 1, title: "Upload Receipt", icon: Upload, completed: !!receiptData },
-    { id: 2, title: "Add People", icon: Users, completed: people.length > 0 },
-    { id: 3, title: "Assign Items", icon: Calculator, completed: false },
-    { id: 4, title: "Split Bill", icon: Receipt, completed: false },
+    { id: 1, title: "Upload Receipt", icon: Upload },
+    { id: 2, title: "Add People", icon: Users },
+    { id: 3, title: "Assign Items", icon: Calculator },
+    { id: 4, title: "Split Bill", icon: Receipt },
   ];
 
   const handleReceiptProcessed = (data: ReceiptData, imageUrl?: string) => {
@@ -71,6 +72,17 @@ export default function SplitBillApp() {
     setIsProcessing(false);
   };
 
+  // Fungsi untuk kembali ke step tertentu
+  const goToStep = (stepId: number) => {
+    // Cek apakah step valid
+    if (stepId < 1 || stepId > steps.length) return;
+
+    // Hanya bisa ke step yang sudah pernah dicapai
+    if (stepId <= currentStep) {
+      setCurrentStep(stepId);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6">
       <div className="max-w-3xl mx-auto w-full">
@@ -82,29 +94,28 @@ export default function SplitBillApp() {
           </p>
         </div>
 
-        {/* Progress Steps */}
+        {/* Progress Steps - Dapat diklik */}
         <div className="flex justify-center mb-6 overflow-x-auto pb-2">
           <div className="flex items-center space-x-4">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center">
-                <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors ${
-                    currentStep >= step.id
-                      ? "bg-blue-600 border-blue-600 text-white"
-                      : step.completed
-                      ? "bg-green-600 border-green-600 text-white"
-                      : "bg-white border-gray-300 text-gray-400"
+                <button
+                  onClick={() => goToStep(step.id)}
+                  className={`flex items-center gap-2 px-3 py-1 rounded-lg transition-all duration-200 ${
+                    currentStep === step.id
+                      ? "bg-blue-600 text-white"
+                      : currentStep > step.id
+                      ? "bg-blue-500/60 text-blue-800" // ✅ Warna diubah dari hijau ke biru muda
+                      : "text-gray-500 hover:bg-gray-100"
                   }`}
                 >
-                  {step.icon && <step.icon className="w-4 h-4" />}
-                </div>
-                <span
-                  className={`ml-1 text-xs sm:text-sm font-medium ${
-                    currentStep >= step.id ? "text-blue-600" : "text-gray-500"
-                  }`}
-                >
-                  {step.title}
-                </span>
+                  <step.icon className="w-4 h-4" />
+                  <span className="text-xs sm:text-sm font-medium">
+                    {step.title}
+                  </span>
+                </button>
+
+                {/* Garis pemisah antar step */}
                 {index < steps.length - 1 && (
                   <div
                     className={`w-6 h-0.5 ml-2 ${

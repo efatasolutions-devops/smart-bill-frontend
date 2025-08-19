@@ -123,10 +123,12 @@ export default function DashboardPage() {
             <div className="w-16 h-16 bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
               <Lock className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-slate-800 mb-2">Premium Only</h3>
+            <h3 className="text-lg font-bold text-slate-800 mb-2">Coming Soon</h3>
             <p className="text-slate-600 text-sm mb-4">
-              Unlock advanced calendar tracking and analytics
+              Coming Soon for Premium
             </p>
+            {/* ✅ Hapus tombol ini */}
+            {/* 
             <Button
               onClick={handleCalendarClick}
               className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-sm"
@@ -134,6 +136,7 @@ export default function DashboardPage() {
               <Crown className="w-4 h-4 mr-1" />
               Upgrade to Pro
             </Button>
+            */}
           </div>
         </div>
 

@@ -13,8 +13,6 @@ import {
   Crown,
   Menu,
   X,
-  Sparkles,
-  Star,
 } from "lucide-react";
 import Cookies from "js-cookie";
 
@@ -64,7 +62,7 @@ export function Sidebar({
       Cookies?.remove(keyCookie);
     });
     router?.push("/login");
-    onClose?.(); // Tutup sidebar saat logout
+    onClose?.();
   };
 
   return (
@@ -84,7 +82,7 @@ export function Sidebar({
         } ${
           isOpen
             ? "translate-x-0"
-            : "-translate-x-full md:translate-x-0" // Sembunyi di mobile, muncul di desktop
+            : "-translate-x-full md:translate-x-0"
         }`}
       >
         <div className="flex flex-col h-full">
@@ -93,17 +91,20 @@ export function Sidebar({
             <div className="flex items-center justify-between">
               {!ctx?.isSidebarCollapsed && (
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-primary-500 via-secondary-500 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg">
-                    <span className="text-white font-bold text-sm font-display">
-                      LB
-                    </span>
+                  {/* Logo dari favicon.ico */}
+                  <div className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden shadow-lg">
+                    <img
+                      src="/logo.png"
+                      alt="LihatBill Logo"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <div>
                     <h1 className="text-xl font-bold text-slate-800 font-display">
                       LihatBill
                     </h1>
                     <p className="text-xs text-slate-500 font-body">
-                      Free Version
+                      Beta Version
                     </p>
                   </div>
                 </div>
@@ -117,11 +118,7 @@ export function Sidebar({
                 }}
                 className="hover:bg-white/10"
               >
-                {ctx?.isSidebarCollapsed ? (
-                  <Menu className="w-4 h-4" />
-                ) : (
-                  <X className="w-4 h-4" />
-                )}
+                {ctx?.isSidebarCollapsed ? <Menu className="w-4 h-4" /> : <X className="w-4 h-4" />}
               </Button>
             </div>
           </div>
@@ -135,7 +132,7 @@ export function Sidebar({
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={onClose} // Tutup sidebar saat klik (penting untuk mobile)
+                    onClick={onClose}
                     className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${
                       isActive
                         ? "bg-primary-100/80 text-primary-700 shadow-sm"
@@ -143,9 +140,7 @@ export function Sidebar({
                     }`}
                   >
                     <item.icon
-                      className={`w-5 h-5 ${
-                        isActive ? "text-primary-600" : ""
-                      }`}
+                      className={`w-5 h-5 ${isActive ? "text-primary-600" : ""}`}
                     />
                     {!ctx?.isSidebarCollapsed && (
                       <>
@@ -176,7 +171,8 @@ export function Sidebar({
             </Button>
           </div>
 
-          {/* Premium CTA */}
+          {/* 🚫 Upgrade to Pro dihapus karena belum ada */}
+          {/* 
           {!ctx?.isSidebarCollapsed && (
             <div className="p-4 border-t border-white/10">
               <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-4 border border-amber-200/50">
@@ -202,6 +198,7 @@ export function Sidebar({
               </div>
             </div>
           )}
+          */}
         </div>
       </div>
 

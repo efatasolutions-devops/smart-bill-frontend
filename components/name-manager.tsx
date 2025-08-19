@@ -92,7 +92,7 @@ export default function NameManager({
       <Card className="bg-gray-50 border-gray-200">
         <CardHeader className="pb-3">
           <CardTitle className="text-base sm:text-lg font-semibold text-gray-800">
-            {receiptData.restaurant.store_name || "Unknown Restaurant"}
+            {receiptData.store_information?.store_name || "Unknown Restaurant"}
           </CardTitle>
         </CardHeader>
         <CardContent>
