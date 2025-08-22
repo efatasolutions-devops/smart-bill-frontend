@@ -20,13 +20,17 @@ import {
   Clock,
   User,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import LayoutContext from "@/context/layout-context";
 import { useRouter } from "next/navigation";
 
 export default function BerandaPage() {
   const router = useRouter();
-  const ctx = React.useContext(LayoutContext);
+
+  // Untuk mencegah useLayoutEffect warning, kita tunda render ComingSoonOverlay sampai client
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const navigationItems = [
     {
@@ -113,28 +117,11 @@ export default function BerandaPage() {
       <section className="relative h-[50vh] sm:h-[60vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/placeholder.svg?height=600&width=1200&text=LihatBill+Hero+Banner"
-            alt="LihatBill - Kelola Keuangan Jadi Mudah"
+            src="/app-banner.png"
+            alt="LihatBill - Kelola Keuangan & Bagi Bill Jadi Mudah"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
-        </div>
-        <div className="relative z-10 flex items-center h-full px-6">
-          <div className="max-w-lg">
-            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4 leading-tight">
-              Kelola Keuangan & Bagi Bill Jadi Mudah
-            </h1>
-            <p className="text-lg text-white/90 mb-6">
-              Aplikasi all-in-one untuk split bill, pencatatan keuangan, dan analisis pengeluaran.
-            </p>
-            <Button
-              onClick={() => router.push("/splitbill")}
-              className="bg-white text-slate-800 hover:bg-gray-100 font-semibold px-6 py-3 text-base"
-            >
-              Coba Sekarang
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </div>
         </div>
       </section>
 
@@ -184,7 +171,8 @@ export default function BerandaPage() {
 
       {/* Blog Section */}
       <section className="px-6 py-12 sm:py-16 bg-white/50 backdrop-blur-sm relative">
-        <ComingSoonOverlay />
+        {/* Hanya render ComingSoonOverlay di client */}
+        {isClient && <ComingSoonOverlay />}
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10 sm:mb-16">
             <h2 className="text-2xl sm:text-4xl font-bold text-slate-800 mb-3">
