@@ -53,6 +53,28 @@ export default function MenuAssignment({
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [isAddingNewItem, setIsAddingNewItem] = useState(false);
   const [newItem, setNewItem] = useState({ name: "", price: 0, quantity: 1 });
+
+  // State untuk Tax dan Service
+  const [editableTax, setEditableTax] = useState<number>(receiptData.tax?.total_tax || 0);
+  const [editableService, setEditableService] = useState<number>(receiptData.serviceCharge || 0);
+
+  // Format number ke Rupiah string
+  const formatRupiah = (num: number): string => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    })
+      .format(num)
+      .replace("Rp", "Rp ");
+  };
+
+  // Parse input string ke number
+  const parseRupiah = (value: string): number => {
+    const cleaned = value.replace(/[^0-9]/g, "");
+    return cleaned ? parseInt(cleaned, 10) : 0;
+  };
+
   const { toast } = useToast();
 
   // Initialize editable items and assignments
@@ -67,7 +89,13 @@ export default function MenuAssignment({
     setAssignments(initialAssignments);
   }, [receiptData.items]);
 
-  // Calculate totals whenever assignments or items change
+  // Initialize tax & service
+  useEffect(() => {
+    setEditableTax(receiptData.tax?.total_tax || 0);
+    setEditableService(receiptData.serviceCharge || 0);
+  }, [receiptData.tax?.total_tax, receiptData.serviceCharge]);
+
+  // Recalculate totals when assignments or values change
   useEffect(() => {
     const newPeople = people.map((person) => ({
       ...person,
@@ -98,7 +126,7 @@ export default function MenuAssignment({
     });
 
     setUpdatedPeople(newPeople);
-  }, [assignments, editableItems, people]);
+  }, [assignments, editableItems, people, editableTax, editableService]);
 
   const updateItem = (
     itemId: string,
@@ -110,10 +138,7 @@ export default function MenuAssignment({
         item.id === itemId
           ? {
               ...item,
-              [field]:
-                field === "price" || field === "quantity"
-                  ? Number(value)
-                  : value,
+              [field]: field === "price" || field === "quantity" ? Number(value) : value,
             }
           : item
       )
@@ -171,9 +196,7 @@ export default function MenuAssignment({
         if (isAssigned) {
           return {
             ...assignment,
-            assignedPeople: assignment.assignedPeople.filter(
-              (id) => id !== personId
-            ),
+            assignedPeople: assignment.assignedPeople.filter((id) => id !== personId),
           };
         } else {
           return {
@@ -187,7 +210,7 @@ export default function MenuAssignment({
 
   const isPersonAssigned = (itemId: string, personId: string): boolean => {
     const assignment = assignments.find((a) => a.itemId === itemId);
-    return assignment?.assignedPeople.includes(personId) || false;
+    return !!assignment?.assignedPeople.includes(personId);
   };
 
   const getAssignedPeopleCount = (itemId: string): number => {
@@ -219,6 +242,22 @@ export default function MenuAssignment({
     return editableItems.every((item) => getAssignedPeopleCount(item.id) > 0);
   };
 
+  const getItemsSubtotal = (): number => {
+    return editableItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  };
+
+  const getTaxPerPerson = (personTotal: number): number => {
+    const itemsSubtotal = getItemsSubtotal();
+    if (itemsSubtotal === 0) return 0;
+    return (editableTax * personTotal) / itemsSubtotal;
+  };
+
+  const getServicePerPerson = (personTotal: number): number => {
+    const itemsSubtotal = getItemsSubtotal();
+    if (itemsSubtotal === 0) return 0;
+    return (editableService * personTotal) / itemsSubtotal;
+  };
+
   const proceedToSummary = async () => {
     if (!isAssignmentComplete()) {
       toast({
@@ -229,19 +268,22 @@ export default function MenuAssignment({
       return;
     }
 
-    const payload = buildSummaryPayload(updatedPeople, receiptData);
+    const modifiedReceiptData = {
+      ...receiptData,
+      tax: { total_tax: editableTax },
+      serviceCharge: editableService,
+    };
+
+    const payload = buildSummaryPayload(updatedPeople, modifiedReceiptData);
 
     try {
-      const { data } = await axios(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/splitbill`,
-        {
-          method: "POST",
-          data: payload,
-          headers: {
-            Authorization: `Bearer ${Cookies?.get("token")}`,
-          },
-        }
-      );
+      const { data } = await axios(`${process.env.NEXT_PUBLIC_BASE_URL}/splitbill`, {
+        method: "POST",
+        data: payload,
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
+        },
+      });
 
       toast({
         title: "Success",
@@ -259,25 +301,6 @@ export default function MenuAssignment({
     }
   };
 
-  const getItemsSubtotal = (): number => {
-    return editableItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-  };
-
-  const getTaxPerPerson = (personTotal: number): number => {
-    const itemsSubtotal = getItemsSubtotal();
-    if (itemsSubtotal === 0) return 0;
-    return (receiptData.tax.total_tax * personTotal) / itemsSubtotal;
-  };
-
-  const getServicePerPerson = (personTotal: number): number => {
-    const itemsSubtotal = getItemsSubtotal();
-    if (itemsSubtotal === 0) return 0;
-    return (receiptData.serviceCharge * personTotal) / itemsSubtotal;
-  };
-
   return (
     <div className="space-y-6 w-full max-w-3xl mx-auto">
       {/* Header */}
@@ -289,9 +312,7 @@ export default function MenuAssignment({
           </p>
         </div>
         <Badge variant={isAssignmentComplete() ? "default" : "secondary"}>
-          {editableItems.filter((item) => getAssignedPeopleCount(item.id) > 0)
-            .length}{" "}
-          / {editableItems.length} Assigned
+          {editableItems.filter((item) => getAssignedPeopleCount(item.id) > 0).length} / {editableItems.length} Assigned
         </Badge>
       </div>
 
@@ -307,7 +328,7 @@ export default function MenuAssignment({
           <CardContent>
             <div className="max-w-xs sm:max-w-sm md:max-w-md mx-auto">
               <img
-                src={receiptImage || "/placeholder.svg"}
+                src={receiptImage}
                 alt="Receipt"
                 className="w-full h-auto rounded-lg border shadow-sm"
               />
@@ -316,7 +337,7 @@ export default function MenuAssignment({
         </Card>
       )}
 
-      {/* Overall Summary */}
+      {/* Receipt Summary */}
       <Card className="bg-slate-50 border-slate-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-slate-900 text-base">
@@ -328,46 +349,35 @@ export default function MenuAssignment({
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs sm:text-sm">
             <div className="text-center">
               <p className="text-slate-600">Items Subtotal</p>
-              <p className="font-semibold">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                }).format(getItemsSubtotal() || 0)}
-              </p>
+              <p className="font-semibold">{formatRupiah(getItemsSubtotal() || 0)}</p>
             </div>
+
             <div className="text-center">
               <p className="text-slate-600">Tax</p>
-              <p className="font-semibold">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                }).format(receiptData.tax?.total_tax || 0)}
-              </p>
+              <Input
+                type="text"
+                value={formatRupiah(editableTax)}
+                onChange={(e) => setEditableTax(parseRupiah(e.target.value))}
+                className="w-full text-right font-semibold text-sm bg-white border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Rp 0"
+              />
             </div>
+
             <div className="text-center">
               <p className="text-slate-600">Service</p>
-              <p className="font-semibold">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                }).format(receiptData.serviceCharge)}
-              </p>
+              <Input
+                type="text"
+                value={formatRupiah(editableService)}
+                onChange={(e) => setEditableService(parseRupiah(e.target.value))}
+                className="w-full text-right font-semibold text-sm bg-white border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Rp 0"
+              />
             </div>
+
             <div className="text-center">
               <p className="text-slate-600">Grand Total</p>
               <p className="font-semibold text-blue-600">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                }).format(
-                  (getItemsSubtotal() || 0) +
-                    (receiptData.tax?.total_tax || 0) +
-                    (receiptData.serviceCharge || 0)
-                )}
+                {formatRupiah(getItemsSubtotal() + editableTax + editableService)}
               </p>
             </div>
           </div>
@@ -564,7 +574,6 @@ export default function MenuAssignment({
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                {/* Quick Actions */}
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Button
                     size="sm"
@@ -584,7 +593,6 @@ export default function MenuAssignment({
                   </Button>
                 </div>
 
-                {/* Person Assignments */}
                 <div className="grid grid-cols-1 gap-2">
                   {people.map((person) => {
                     const isPersonAssignedToItem = isPersonAssigned(item.id, person.id);
@@ -595,7 +603,8 @@ export default function MenuAssignment({
                     return (
                       <div
                         key={person.id}
-                        className="flex items-center justify-between p-3 bg-white rounded-lg border"
+                        className="flex items-center justify-between p-3 bg-white rounded-lg border cursor-pointer hover:bg-gray-50 transition-colors"
+                        onClick={() => togglePersonAssignment(item.id, person.id)}
                       >
                         <div className="flex items-center gap-3 min-w-0 flex-1">
                           <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -618,6 +627,7 @@ export default function MenuAssignment({
                           onCheckedChange={() => {
                             togglePersonAssignment(item.id, person.id);
                           }}
+                          className="cursor-pointer"
                         />
                       </div>
                     );
@@ -657,19 +667,19 @@ export default function MenuAssignment({
                   <div className="space-y-1 text-xs">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Items ({person.items.length})</span>
-                      <span>Rp {Math.round(person.total).toLocaleString("id-ID")}</span>
+                      <span>{formatRupiah(person.total)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Tax</span>
-                      <span>Rp {Math.round(tax).toLocaleString("id-ID")}</span>
+                      <span>{formatRupiah(tax)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Service</span>
-                      <span>Rp {Math.round(service).toLocaleString("id-ID")}</span>
+                      <span>{formatRupiah(service)}</span>
                     </div>
                     <div className="flex justify-between font-medium border-t pt-1">
                       <span>Total</span>
-                      <span>Rp {Math.round(finalTotal).toLocaleString("id-ID")}</span>
+                      <span>{formatRupiah(finalTotal)}</span>
                     </div>
                   </div>
                 </div>
