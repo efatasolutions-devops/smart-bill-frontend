@@ -1,6 +1,7 @@
+// components/split-summary.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +9,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft,
   Download,
-  Share2,
   Receipt,
   Users,
   Calculator,
@@ -24,6 +24,9 @@ import ReactDOMServer from "react-dom/server";
 import CardSummaryPrint from "./card-summary-print";
 import axios from "axios";
 
+// 🔽 Import Modal Feedback
+import FeedbackModal from "./feedback-modal";
+
 interface SplitSummaryProps {
   people: Person[];
   receiptData: ReceiptData;
@@ -38,9 +41,20 @@ export default function SplitSummary({
   onBack,
 }: SplitSummaryProps) {
   const [copiedPersonId, setCopiedPersonId] = useState<string | null>(null);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+
   const { calculation, stats, paymentInstructions, exportData } =
     useSplitCalculator(receiptData, people);
   const { toast } = useToast();
+
+  // 🔁 Modal muncul SETIAP KALI halaman ini dirender (tanpa cek localStorage)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowFeedbackModal(true);
+    }, 800); // Delay kecil agar tidak mengganggu UX
+
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!calculation || !stats || !exportData) {
     return (
@@ -340,6 +354,11 @@ export default function SplitSummary({
           </Button>
         </div>
       </div>
+
+      {/* 🔽 Feedback Modal: Muncul setiap kali */}
+      {showFeedbackModal && (
+        <FeedbackModal onClose={() => setShowFeedbackModal(false)} />
+      )}
     </div>
   );
 }
